@@ -1,0 +1,35 @@
+.main-container{
+    padding:2rem
+}
+.header{
+    font-size: 3rem;
+    color:#800080;
+}
+.table-heading{
+    color: #800080	;
+    padding-left: 0.5rem; 
+}
+.table-row{
+    margin:1rem
+}
+.icon {
+  color: #800080;
+  margin-left: 1rem;
+}
+
+.add-btn{
+    background-color: #800080	;
+    padding-left: 0.5rem;  
+    padding: 0 2rem; 
+}
+
+.header-div{
+    display: flex;
+    justify-content:space-between;
+    padding-bottom: 2rem;
+
+}
+
+.search-input{
+    width: 80%;
+}
