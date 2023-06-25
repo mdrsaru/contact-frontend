@@ -1,37 +1,36 @@
 import { useEffect, useState } from "react";
 import { deleteAPI, get } from "../../API/axios";
-import { Button,  Form, Table } from "react-bootstrap";
+import { Button, Form, Table } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit,  faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import ContactForm from "../ContactForm";
 import { toast } from "react-toastify";
 import { Contact } from "../../interfaces/contact";
 
-import './styles.css'
+import "./styles.css";
 import NoDataFound from "../../components/NoDataFound";
 const ContactList = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [show, setShow] = useState(false);
   const [refresh, setRefresh] = useState(false);
-  const [contact, setContact] = useState<Contact>();
-  const [search,setSearch] = useState('')
-  const [searchText,setSearchText] = useState('')
-  const [showPrompt,setShowPrompt] = useState(false)
+  const [contact, setContact] = useState<Contact | null>();
+  const [search, setSearch] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
     setRefresh(false);
-    let data:any ={}
-    if(search){
-      data.fullName=search
-    
-  }
-    get("/contacts",data).then((response: any) => {
-      if(response?.data?.data?.length){
-        setShowPrompt(true)
+    let data: any = {};
+    if (search) {
+      data.fullName = search;
+    }
+    get("/contacts", data).then((response: any) => {
+      if (response?.data?.data?.length) {
+        setShowPrompt(true);
       }
       setContacts(response?.data?.data);
     });
-  }, [refresh,search]);
+  }, [refresh, search]);
 
   const handleDelete = (id: string) => {
     deleteAPI(`/contact/${id}`)
@@ -65,41 +64,47 @@ const ContactList = () => {
     </tr>
   ));
 
-  const handleEditContact = (data:any) => {
+  const handleEditContact = (data: any) => {
     setShow(!show);
     setContact(data);
   };
   const handleAddContact = () => {
+    setContact(null)
     setShow(!show);
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>)=>{
-setSearchText(e.target.value)
+  const handleClose =() =>{
+    setShow(false)
+    setContact(null)
   }
 
-  const handleSearchButton = () =>{
-    setSearch(searchText)
-  }
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
+
+  const handleSearchButton = () => {
+    setSearch(searchText);
+  };
   return (
     <div className="main-container">
       <p className="header">Contact List</p>
-      <div className='header-div'>
-        
-          <Form className="d-flex">
-            <Form.Control
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-              className='me-2 search-input'
-              onChange={handleSearch}
-            />
-            <Button className='add-btn' onClick={handleSearchButton}>
-              Search
-            </Button>
-          </Form>
-       
-      <Button onClick={handleAddContact} className='add-btn'>Add Contact</Button>
+      <div className="header-div">
+        <Form className="d-flex">
+          <Form.Control
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+            className="me-2 search-input"
+            onChange={handleSearch}
+          />
+          <Button className="add-btn" onClick={handleSearchButton}>
+            Search
+          </Button>
+        </Form>
 
+        <Button onClick={handleAddContact} className="add-btn">
+          Add Contact
+        </Button>
       </div>
       <Table responsive striped bordered hover>
         <thead>
@@ -111,23 +116,32 @@ setSearchText(e.target.value)
           <th className="table-heading">Actions</th>
         </thead>
 
-        <tbody>{
-        contacts?.length ?
-        contactList
-      :
-      <NoDataFound 
-      show={showPrompt} 
-      handleClose={()=>setShowPrompt(false)}
-      setShowForm={setShow}
-      />
-      }</tbody>
+        <tbody>
+          {contacts?.length ? (
+            contactList
+          ) : (
+            <NoDataFound
+              show={showPrompt}
+              handleClose={() => setShowPrompt(false)}
+              setShowForm={setShow}
+            />
+          )}
+        </tbody>
       </Table>
-      <ContactForm
-        show={show}
-        handleClose={() => setShow(false)}
-        setRefresh={setRefresh}
-        contact={contact}
-      />
+      {contact ? (
+        <ContactForm
+          show={show}
+          handleClose={handleClose}
+          setRefresh={setRefresh}
+          contact={contact}
+        />
+      ) : (
+        <ContactForm
+          show={show}
+          handleClose={handleClose}
+          setRefresh={setRefresh}
+        />
+      )}
     </div>
   );
 };

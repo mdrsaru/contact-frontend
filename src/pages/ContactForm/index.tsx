@@ -7,6 +7,7 @@ import "./styles.css";
 import { post, put } from "../../API/axios";
 import { toast } from "react-toastify";
 import { ContactInput } from "../../interfaces/contact";
+import { useEffect } from "react";
 
 interface IProps {
   show: boolean;
@@ -25,11 +26,16 @@ const ContactForm = (props: IProps) => {
   const {
     register,
     handleSubmit,
+    reset,
+    resetField,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
 
+  useEffect(()=>{
+    reset()
+  },[])
   const onSubmit = (data: any) => {
     if (contact) {
       data.id = contact._id;
